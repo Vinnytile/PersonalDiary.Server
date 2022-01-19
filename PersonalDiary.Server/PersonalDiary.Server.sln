@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalDiary.Server", "PersonalDiary.Server\PersonalDiary.Server.csproj", "{DFFE12C3-5DC1-4114-986D-8DB6D855813E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFFE12C3-5DC1-4114-986D-8DB6D855813E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFFE12C3-5DC1-4114-986D-8DB6D855813E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFFE12C3-5DC1-4114-986D-8DB6D855813E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFFE12C3-5DC1-4114-986D-8DB6D855813E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BAC8E055-25F0-4488-A11D-45A1AC37DBFA}
+	EndGlobalSection
+EndGlobal
