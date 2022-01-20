@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PersonalDiary.Server.Extensions;
 
 namespace PersonalDiary.Server
 {
@@ -26,6 +27,8 @@ namespace PersonalDiary.Server
             services.AddControllers();
 
             services.AddSwaggerGen();
+
+            services.AddAutoMapper();
 
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<IAuthService, AuthService>();
