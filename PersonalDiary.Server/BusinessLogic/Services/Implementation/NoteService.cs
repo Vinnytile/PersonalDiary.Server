@@ -47,7 +47,7 @@ namespace BusinessLogic.Services
 
         public async Task DeleteNote(Guid noteId)
         {
-            var note = _context.Notes.FirstOrDefault(x => x.Id == noteId);
+            Note note = _context.Notes.FirstOrDefault(x => x.Id == noteId);
 
             _context.Notes.Remove(note);
 

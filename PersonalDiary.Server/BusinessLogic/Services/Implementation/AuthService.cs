@@ -1,4 +1,5 @@
-﻿using DataAccess.Context;
+﻿using AutoMapper;
+using DataAccess.Context;
 using SharedData.Models;
 using System;
 using System.Linq;
@@ -9,20 +10,17 @@ namespace BusinessLogic.Services
     public class AuthService : IAuthService
     {
         private readonly ApplicationContext _context;
+        private readonly IMapper _mapper;
 
-        public AuthService(ApplicationContext context)
+        public AuthService(ApplicationContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task RegisterAsync(UserRegisterDTO userRegisterDTO)
         {
-            var user = new User
-            {
-                Name = userRegisterDTO.Name,
-                Email = userRegisterDTO.Email,
-                Password = userRegisterDTO.Password
-            };
+            User user = _mapper.Map<User>(userRegisterDTO);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -32,7 +30,7 @@ namespace BusinessLogic.Services
 
         public User Login(UserLoginDTO userLoginDTO)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == userLoginDTO.Email);
+            User user = _context.Users.FirstOrDefault(u => u.Email == userLoginDTO.Email);
 
             if (user is null)
             {
