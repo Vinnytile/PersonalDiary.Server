@@ -28,6 +28,7 @@ namespace PersonalDiary.Server
             services.AddSwaggerGen();
 
             services.AddScoped<INoteService, NoteService>();
+            services.AddScoped<IAuthService, AuthService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
