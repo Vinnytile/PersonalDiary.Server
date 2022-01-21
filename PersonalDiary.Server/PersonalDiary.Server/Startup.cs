@@ -26,9 +26,8 @@ namespace PersonalDiary.Server
 
             services.AddControllers();
 
-            services.AddSwaggerGen();
-
-            services.AddAutoMapper();
+            services.AddSwaggerService();
+            services.AddAutoMapperService();
 
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<IAuthService, AuthService>();

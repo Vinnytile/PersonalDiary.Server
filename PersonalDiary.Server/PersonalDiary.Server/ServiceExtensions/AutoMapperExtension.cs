@@ -6,7 +6,7 @@ namespace PersonalDiary.Server.Extensions
 {
     public static class AutoMapperExtension
     {
-        public static IServiceCollection AddAutoMapper(this IServiceCollection services)
+        public static IServiceCollection AddAutoMapperService(this IServiceCollection services)
         {
             var mapperConfig = new MapperConfiguration(configurationExpression =>
             {
