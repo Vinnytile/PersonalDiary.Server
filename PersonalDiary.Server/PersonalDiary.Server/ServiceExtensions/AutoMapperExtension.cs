@@ -11,6 +11,7 @@ namespace PersonalDiary.Server.Extensions
             var mapperConfig = new MapperConfiguration(configurationExpression =>
             {
                 configurationExpression.CreateMap<UserRegisterDTO, User>();
+                configurationExpression.CreateMap<NoteDTO, Note>();
             });
 
             IMapper mapper = mapperConfig.CreateMapper();

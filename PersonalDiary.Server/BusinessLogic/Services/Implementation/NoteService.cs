@@ -1,59 +1,59 @@
-﻿using DataAccess.Context;
+﻿using AutoMapper;
+using DataAccess.Context;
+using Microsoft.EntityFrameworkCore;
 using SharedData.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
     public class NoteService : INoteService
     {
-        private readonly ApplicationContext _context;
+        private readonly DataContext _dataContext;
+        private readonly IMapper _mapper;
 
-        public NoteService(ApplicationContext context)
+        public NoteService(DataContext dataContext, IMapper mapper)
         {
-            _context = context;
-            if (!_context.Notes.Any())
-            {
-                _context.Notes.Add(new Note { Desciption = "Desc1", Text = "Text1" });
-                _context.Notes.Add(new Note { Desciption = "Desc2", Text = "Text2" });
-                _context.SaveChangesAsync();
-            }
+            _dataContext = dataContext;
+            _mapper = mapper;
         }
 
-        public IEnumerable<Note> GetAllNotes() =>
-            _context.Notes.ToList();
+        public async Task<List<Note>> GetAllNotesAsync() =>
+            await _dataContext.Notes.ToListAsync();
 
-        public Note GetNoteById(Guid noteId) =>
-            _context.Notes.FirstOrDefault(x => x.Id == noteId);
+        public async Task<Note> GetNoteByIdAsync(Guid noteId) =>
+            await _dataContext.Notes.FirstOrDefaultAsync(n => n.Id == noteId);
 
-        public async Task SetNote(Note note)
+        public async Task<bool> CreateNoteAsync(NoteDTO noteDTO)
         {
-            _context.Notes.Add(note);
-            await _context.SaveChangesAsync();
+            Note note = _mapper.Map<Note>(noteDTO);
 
-            await Task.CompletedTask;
+            await _dataContext.Notes.AddAsync(note);
+            var created = await _dataContext.SaveChangesAsync();
+
+            return created > 0;
         }
 
-        public async Task UpdateNote(Note note)
+        public async Task<bool> UpdateNoteAsync(Note note)
         {
-            _context.Update(note);
+            _dataContext.Notes.Update(note);
+            var updated = await _dataContext.SaveChangesAsync();
 
-            await _context.SaveChangesAsync();
-
-            await Task.CompletedTask;
+            return updated > 0;
         }
 
-        public async Task DeleteNote(Guid noteId)
+        public async Task<bool> DeleteNoteAsync(Guid noteId)
         {
-            Note note = _context.Notes.FirstOrDefault(x => x.Id == noteId);
+            Note note = await _dataContext.Notes.FirstOrDefaultAsync(n => n.Id == noteId);
 
-            _context.Notes.Remove(note);
+            if (note == null)
+                return false;
 
-            await _context.SaveChangesAsync();
+            _dataContext.Notes.Remove(note);
+            var deleted = await _dataContext.SaveChangesAsync();
 
-            await Task.CompletedTask;
+            return deleted > 0;
         }
     }
 }

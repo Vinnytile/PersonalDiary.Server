@@ -9,10 +9,10 @@ namespace BusinessLogic.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly ApplicationContext _context;
+        private readonly DataContext _context;
         private readonly IMapper _mapper;
 
-        public AuthService(ApplicationContext context, IMapper mapper)
+        public AuthService(DataContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
