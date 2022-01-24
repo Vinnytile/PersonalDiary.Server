@@ -7,14 +7,14 @@ namespace BusinessLogic.Services
 {
     public interface INoteService
     {
-        IEnumerable<Note> GetAllNotes();
+        Task<List<Note>> GetAllNotesAsync();
 
-        Note GetNoteById(Guid noteId);
+        Task<Note> GetNoteByIdAsync(Guid noteId);
 
-        Task SetNote(Note note);
+        Task<bool> CreateNoteAsync(NoteDTO noteDTO);
 
-        Task UpdateNote(Note note);
+        Task<bool> UpdateNoteAsync(Note note);
 
-        Task DeleteNote(Guid noteId);
+        Task<bool> DeleteNoteAsync(Guid noteId);
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataAccess.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(DataContext))]
     [Migration("20220120102633_AddNoteTable")]
     partial class AddNoteTable
     {
