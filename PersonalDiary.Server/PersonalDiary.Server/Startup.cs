@@ -31,6 +31,17 @@ namespace PersonalDiary.Server
 
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<IAuthService, AuthService>();
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -47,6 +58,8 @@ namespace PersonalDiary.Server
             }
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
