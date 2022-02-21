@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SharedData.Models;
 
-namespace PersonalDiary.Server.Extensions
+namespace PersonalDiary.Server.ServiceExtensions
 {
     public static class AutoMapperExtension
     {

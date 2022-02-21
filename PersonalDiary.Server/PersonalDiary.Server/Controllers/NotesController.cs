@@ -1,4 +1,6 @@
 ﻿using BusinessLogic.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedData.Models;
 using System;
@@ -7,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace PersonalDiary.Server.Controllers
 {
+    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class NotesController : ControllerBase

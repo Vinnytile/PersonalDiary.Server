@@ -1,48 +1,74 @@
 ﻿using AutoMapper;
 using DataAccess.Context;
+using Microsoft.EntityFrameworkCore;
 using SharedData.Models;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly DataContext _context;
+        private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
+        private readonly IJwtService _jwtService;
 
-        public AuthService(DataContext context, IMapper mapper)
+        public AuthService(DataContext context, IMapper mapper, IJwtService jwtService)
         {
-            _context = context;
+            _dataContext = context;
             _mapper = mapper;
+            _jwtService = jwtService;
         }
 
-        public async Task RegisterAsync(UserRegisterDTO userRegisterDTO)
+        public async Task<AuthenticationResult> RegisterAsync(UserRegisterDTO userRegisterDTO)
         {
-            User user = _mapper.Map<User>(userRegisterDTO);
+            User existingUser = await _dataContext.Users.FirstOrDefaultAsync(u => u.Email == userRegisterDTO.Email);
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            if (existingUser != null)
+            {
+                return new AuthenticationResult
+                {
+                    Errors = new[] { "User with this email already exists" }
+                };
+            }
 
-            await Task.CompletedTask;
+            User newUser = _mapper.Map<User>(userRegisterDTO);
+            var createdUser = await _dataContext.Users.AddAsync(newUser);
+            await _dataContext.SaveChangesAsync();
+
+            if (createdUser == null)
+            {
+                return new AuthenticationResult
+                {
+                    Errors = new[] { "Could not add user to db" }
+                };
+            }
+
+            return _jwtService.GenerateAuthenticationResultForUser(newUser);
         }
 
-        public User Login(UserLoginDTO userLoginDTO)
+        public async Task<AuthenticationResult> LoginAsync(UserLoginDTO userLoginDTO)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == userLoginDTO.Email);
+            User user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Email == userLoginDTO.Email);
 
-            if (user is null)
+            if (user == null)
             {
-                throw new Exception("Email is incorrect");
+                return new AuthenticationResult
+                {
+                    Errors = new[] { "User does not exist" }
+                };
             }
 
-            if (userLoginDTO.Password != user.Password)
+            bool isValidPassword = user.Password == userLoginDTO.Password;
+
+            if (!isValidPassword)
             {
-                throw new Exception("Password is incorrect");
+                return new AuthenticationResult
+                {
+                    Errors = new[] { "User/password combination is wrong" }
+                };
             }
 
-            return user;
+            return _jwtService.GenerateAuthenticationResultForUser(user);
         }
     }
 }
