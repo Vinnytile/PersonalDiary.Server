@@ -1,7 +1,8 @@
 ﻿using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 using SharedData.Models;
-using System;
+using SharedData.Models.Auth;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PersonalDiary.Server.Controllers
@@ -20,29 +21,47 @@ namespace PersonalDiary.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegisterDTO userRegisterDTO)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                await _authService.RegisterAsync(userRegisterDTO);
-                return Ok();
+                return BadRequest(new AuthFailedResponse
+                {
+                    Errors = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))
+                });
             }
-            catch (Exception e)
+
+            var authResponse = await _authService.RegisterAsync(userRegisterDTO);
+
+            if (!authResponse.Success)
             {
-                return BadRequest(e.Message);
+                return BadRequest(new AuthFailedResponse
+                {
+                    Errors = authResponse.Errors
+                });
             }
+
+            return Ok(new AuthSuccessResponse
+            {
+                Token = authResponse.Token
+            });
         }
 
         [HttpPost("login")]
-        public IActionResult Login(UserLoginDTO userLoginDTO)
+        public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
         {
-            try
+            var authResponse = await _authService.LoginAsync(userLoginDTO);
+
+            if (!authResponse.Success)
             {
-                var user = _authService.Login(userLoginDTO);
-                return Ok(user);
+                return BadRequest(new AuthFailedResponse
+                {
+                    Errors = authResponse.Errors
+                });
             }
-            catch (Exception e)
+
+            return Ok(new AuthSuccessResponse
             {
-                return BadRequest(e.Message);
-            }
+                Token = authResponse.Token
+            });
         }
     }
 }

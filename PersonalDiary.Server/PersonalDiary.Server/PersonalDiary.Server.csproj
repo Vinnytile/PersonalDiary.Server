@@ -5,7 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\**" />
+    <Content Remove="Extensions\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <None Remove="Extensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

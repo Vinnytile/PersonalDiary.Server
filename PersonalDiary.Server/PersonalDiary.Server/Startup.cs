@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PersonalDiary.Server.Extensions;
+using PersonalDiary.Server.ServiceExtensions;
+using SharedData.Models;
 
 namespace PersonalDiary.Server
 {
@@ -23,6 +24,11 @@ namespace PersonalDiary.Server
         {
             services.AddDbContext<DataContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            var jwtSettings = new JwtSettings();
+            Configuration.Bind(nameof(jwtSettings), jwtSettings);
+            services.AddSingleton(jwtSettings);
+            services.AddJwtAuthenticationService(jwtSettings);
 
             services.AddControllers();
 
@@ -58,6 +64,9 @@ namespace PersonalDiary.Server
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseCors();
 
