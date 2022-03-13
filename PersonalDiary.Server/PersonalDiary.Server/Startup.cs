@@ -70,6 +70,8 @@ namespace PersonalDiary.Server
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseWebSockets();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
