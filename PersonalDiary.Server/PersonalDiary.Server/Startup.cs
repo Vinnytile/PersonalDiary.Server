@@ -38,6 +38,8 @@ namespace PersonalDiary.Server
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<IAuthService, AuthService>();
 
+            services.AddSingleton<NeuralNetworkService>();
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(

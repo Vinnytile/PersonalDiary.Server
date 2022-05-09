@@ -2,7 +2,10 @@
 using DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using SharedData.Models;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace BusinessLogic.Services
 {
@@ -32,6 +35,7 @@ namespace BusinessLogic.Services
             }
 
             User newUser = _mapper.Map<User>(userRegisterDTO);
+            newUser.Password = BCryptNet.HashPassword(newUser.Password);
             var createdUser = await _dataContext.Users.AddAsync(newUser);
             await _dataContext.SaveChangesAsync();
 
@@ -43,7 +47,21 @@ namespace BusinessLogic.Services
                 };
             }
 
-            return _jwtService.GenerateAuthenticationResultForUser(newUser);
+            return new AuthenticationResult { Success = true, UserId = newUser.Id };
+        }
+
+        public async Task<bool> RegisterFaceAsync(Guid userId)
+        {
+            var users = await _dataContext.Users.ToListAsync();
+            var maxFaceId = users.Select(x => x.FaceId).Max();
+
+            var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            user.FaceId = maxFaceId + 1;
+
+            _dataContext.Users.Update(user);
+            var updated = await _dataContext.SaveChangesAsync();
+
+            return updated > 0;
         }
 
         public async Task<AuthenticationResult> LoginAsync(UserLoginDTO userLoginDTO)
@@ -58,7 +76,7 @@ namespace BusinessLogic.Services
                 };
             }
 
-            bool isValidPassword = user.Password == userLoginDTO.Password;
+            bool isValidPassword = BCryptNet.Verify(userLoginDTO.Password, user.Password);
 
             if (!isValidPassword)
             {
@@ -68,7 +86,41 @@ namespace BusinessLogic.Services
                 };
             }
 
-            return _jwtService.GenerateAuthenticationResultForUser(user);
+            string jwtToken = _jwtService.GenerateJwtTokenForUser(user);
+
+            return new AuthenticationResult 
+            { 
+                UserId = user.Id,
+                Token = jwtToken,
+                Success = true 
+            };
+        }
+
+        public async Task<AuthenticationResult> LoginFaceAsync(UserLoginDTO userLoginDTO)
+        {
+            User user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Email == userLoginDTO.Email);
+
+            if (user == null)
+            {
+                return new AuthenticationResult
+                {
+                    Errors = new[] { "User does not exist" }
+                };
+            }
+
+            return new AuthenticationResult
+            {
+                UserId = user.Id,
+                Success = true
+            };
+        }
+
+        public async Task<string> GetJwtTokenAsync(Guid userId)
+        {
+            User user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            string jwtToken = _jwtService.GenerateJwtTokenForUser(user);
+
+            return jwtToken;
         }
     }
 }
