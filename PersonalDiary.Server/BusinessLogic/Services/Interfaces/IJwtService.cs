@@ -4,6 +4,6 @@ namespace BusinessLogic.Services
 {
     public interface IJwtService
     {
-        AuthenticationResult GenerateAuthenticationResultForUser(User user);
+        string GenerateJwtTokenForUser(User user);
     }
 }

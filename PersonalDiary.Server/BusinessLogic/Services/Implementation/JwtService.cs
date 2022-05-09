@@ -16,7 +16,7 @@ namespace BusinessLogic.Services
             _jwtSettings = jwtSettings;
         }
 
-        public AuthenticationResult GenerateAuthenticationResultForUser(User user)
+        public string GenerateJwtTokenForUser(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
@@ -35,11 +35,7 @@ namespace BusinessLogic.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return new AuthenticationResult
-            {
-                Success = true,
-                Token = tokenHandler.WriteToken(token)
-            };
+            return tokenHandler.WriteToken(token);
         }
     }
 }
