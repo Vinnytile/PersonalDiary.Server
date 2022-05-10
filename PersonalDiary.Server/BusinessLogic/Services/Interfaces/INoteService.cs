@@ -10,6 +10,7 @@ namespace BusinessLogic.Services
         Task<List<Note>> GetAllNotesAsync();
 
         Task<Note> GetNoteByIdAsync(Guid noteId);
+        Task<Note> GetNoteByIdAsNoTrackingAsync(Guid noteId);
 
         Task<bool> CreateNoteAsync(NoteDTO noteDTO);
 

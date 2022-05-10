@@ -25,6 +25,9 @@ namespace BusinessLogic.Services
         public async Task<Note> GetNoteByIdAsync(Guid noteId) =>
             await _dataContext.Notes.FirstOrDefaultAsync(n => n.Id == noteId);
 
+        public async Task<Note> GetNoteByIdAsNoTrackingAsync(Guid noteId) =>
+            await _dataContext.Notes.AsNoTracking().FirstOrDefaultAsync(n => n.Id == noteId);
+
         public async Task<bool> CreateNoteAsync(NoteDTO noteDTO)
         {
             Note note = _mapper.Map<Note>(noteDTO);
