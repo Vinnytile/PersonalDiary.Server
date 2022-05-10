@@ -61,14 +61,16 @@ namespace PersonalDiary.Server.Controllers
             }
         }
 
-        // PUT api/notes/
-        [HttpPut]
-        public async Task<IActionResult> Put(Note note)
+        // PUT api/notes/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, Note note)
         {
             if (note == null)
                 return BadRequest();
 
-            var existingNote = await _noteService.GetNoteByIdAsync(note.Id);
+            note.Id = id;
+
+            var existingNote = await _noteService.GetNoteByIdAsNoTrackingAsync(note.Id);
             
             if (existingNote == null)
                 return NotFound();
