@@ -22,19 +22,19 @@ namespace BusinessLogic.Services
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        private string facePath;
-        private string savePath;
-        private CascadeClassifier classifierFace;
-        private EigenFaceRecognizer recognizer;
+        private readonly string facePath;
+        private readonly string savePath;
+        private readonly CascadeClassifier classifierFace;
+        private readonly EigenFaceRecognizer recognizer;
 
         private DateTime lastSavingTime = DateTime.Now;
 
-        private Dictionary<string, List<Image<Gray, Byte>>> usersFaces = new Dictionary<string, List<Image<Gray, byte>>>();
+        private readonly Dictionary<string, List<Image<Gray, Byte>>> usersFaces = new Dictionary<string, List<Image<Gray, byte>>>();
         public Dictionary<string, bool> usersRegisterSucceed = new Dictionary<string, bool>();
         public Dictionary<string, bool> usersLoginSucceed = new Dictionary<string, bool>();
         List<User> users;
 
-        private int numImagesPerUser = 20;
+        private readonly int numImagesPerUser = 20;
 
         public NeuralNetworkService(IServiceScopeFactory serviceScopeFactory)
         {
