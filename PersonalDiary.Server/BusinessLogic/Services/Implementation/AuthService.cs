@@ -2,6 +2,7 @@
 using DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using SharedData.Models;
+using SharedData.Models.User;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +23,9 @@ namespace BusinessLogic.Services
             _jwtService = jwtService;
         }
 
-        public async Task<AuthenticationResult> RegisterAsync(UserRegisterDTO userRegisterDTO)
+        public async Task<AuthenticationResult> RegisterAsync(UserIdentityRegisterDTO useridentityRegisterDTO)
         {
-            User existingUser = await _dataContext.Users.FirstOrDefaultAsync(u => u.Email == userRegisterDTO.Email);
+            UserIdentity existingUser = await _dataContext.UserIdentities.FirstOrDefaultAsync(u => u.Email == useridentityRegisterDTO.Email);
 
             if (existingUser != null)
             {
@@ -34,9 +35,10 @@ namespace BusinessLogic.Services
                 };
             }
 
-            User newUser = _mapper.Map<User>(userRegisterDTO);
-            newUser.Password = BCryptNet.HashPassword(newUser.Password);
-            var createdUser = await _dataContext.Users.AddAsync(newUser);
+            UserIdentity newUserIdentity = _mapper.Map<UserIdentity>(useridentityRegisterDTO);
+            newUserIdentity.Password = BCryptNet.HashPassword(newUserIdentity.Password);
+
+            var createdUser = await _dataContext.UserIdentities.AddAsync(newUserIdentity);
             await _dataContext.SaveChangesAsync();
 
             if (createdUser == null)
@@ -47,26 +49,26 @@ namespace BusinessLogic.Services
                 };
             }
 
-            return new AuthenticationResult { Success = true, UserId = newUser.Id };
+            return new AuthenticationResult { Success = true, UserId = newUserIdentity.Id };
         }
 
         public async Task<bool> RegisterFaceAsync(Guid userId)
         {
-            var users = await _dataContext.Users.ToListAsync();
+            var users = await _dataContext.UserIdentities.ToListAsync();
             var maxFaceId = users.Select(x => x.FaceId).Max();
 
-            var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _dataContext.UserIdentities.FirstOrDefaultAsync(u => u.Id == userId);
             user.FaceId = maxFaceId + 1;
 
-            _dataContext.Users.Update(user);
+            _dataContext.UserIdentities.Update(user);
             var updated = await _dataContext.SaveChangesAsync();
 
             return updated > 0;
         }
 
-        public async Task<AuthenticationResult> LoginAsync(UserLoginDTO userLoginDTO)
+        public async Task<AuthenticationResult> LoginAsync(UserIdentityLoginDTO userIdentityLoginDTO)
         {
-            User user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Email == userLoginDTO.Email);
+            UserIdentity user = await _dataContext.UserIdentities.FirstOrDefaultAsync(u => u.Email == userIdentityLoginDTO.Email);
 
             if (user == null)
             {
@@ -76,7 +78,7 @@ namespace BusinessLogic.Services
                 };
             }
 
-            bool isValidPassword = BCryptNet.Verify(userLoginDTO.Password, user.Password);
+            bool isValidPassword = BCryptNet.Verify(userIdentityLoginDTO.Password, user.Password);
 
             if (!isValidPassword)
             {
@@ -96,9 +98,9 @@ namespace BusinessLogic.Services
             };
         }
 
-        public async Task<AuthenticationResult> LoginFaceAsync(UserLoginDTO userLoginDTO)
+        public async Task<AuthenticationResult> LoginFaceAsync(UserIdentityLoginDTO userIdentityLoginDTO)
         {
-            User user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Email == userLoginDTO.Email);
+            UserIdentity user = await _dataContext.UserIdentities.FirstOrDefaultAsync(u => u.Email == userIdentityLoginDTO.Email);
 
             if (user == null)
             {
@@ -117,7 +119,7 @@ namespace BusinessLogic.Services
 
         public async Task<string> GetJwtTokenAsync(Guid userId)
         {
-            User user = await _dataContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            UserIdentity user = await _dataContext.UserIdentities.FirstOrDefaultAsync(u => u.Id == userId);
             string jwtToken = _jwtService.GenerateJwtTokenForUser(user);
 
             return jwtToken;

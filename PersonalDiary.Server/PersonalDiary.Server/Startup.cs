@@ -1,4 +1,6 @@
 using BusinessLogic.Services;
+using BusinessLogic.Services.Implementation;
+using BusinessLogic.Services.Interfaces;
 using DataAccess.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +39,7 @@ namespace PersonalDiary.Server
 
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
 
             services.AddSingleton<NeuralNetworkService>();
 

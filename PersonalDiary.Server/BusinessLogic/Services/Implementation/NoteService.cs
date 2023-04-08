@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using SharedData.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
@@ -19,8 +21,8 @@ namespace BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task<List<Note>> GetAllNotesAsync() =>
-            await _dataContext.Notes.ToListAsync();
+        public async Task<List<Note>> GetAllNotesByUserIdentityIdAsync(Guid userIdentityId) =>
+            await _dataContext.Notes.Where(x => x.UserIdentityFID == userIdentityId).ToListAsync();
 
         public async Task<Note> GetNoteByIdAsync(Guid noteId) =>
             await _dataContext.Notes.FirstOrDefaultAsync(n => n.Id == noteId);

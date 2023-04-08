@@ -11,6 +11,6 @@ namespace SharedData.Models
         public string Description { get; set; }
         public string Text { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid UserIdentityFID { get; set; }
     }
 }
