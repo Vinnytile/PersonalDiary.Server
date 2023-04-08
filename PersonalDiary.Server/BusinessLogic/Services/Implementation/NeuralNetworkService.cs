@@ -10,11 +10,11 @@ using DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using SharedData.Models;
 using Emgu.CV.CvEnum;
 using static Emgu.CV.Face.FaceRecognizer;
 using System.Collections.Generic;
 using System.Linq;
+using SharedData.Models.User;
 
 namespace BusinessLogic.Services
 {
@@ -32,7 +32,7 @@ namespace BusinessLogic.Services
         private readonly Dictionary<string, List<Image<Gray, Byte>>> usersFaces = new Dictionary<string, List<Image<Gray, byte>>>();
         public Dictionary<string, bool> usersRegisterSucceed = new Dictionary<string, bool>();
         public Dictionary<string, bool> usersLoginSucceed = new Dictionary<string, bool>();
-        List<User> users;
+        List<UserIdentity> users;
 
         private readonly int numImagesPerUser = 20;
 
@@ -84,7 +84,7 @@ namespace BusinessLogic.Services
 
                 if (isUserLogined)
                 {
-                    imageIn.Draw(user.Username, new Point(face.X - 2, face.Y - 2), FontFace.HersheySimplex, 2.0, new Bgr(Color.Black));
+                    imageIn.Draw(user.Id.ToString(), new Point(face.X - 2, face.Y - 2), FontFace.HersheySimplex, 2.0, new Bgr(Color.Black));
                     usersLoginSucceed[userId.ToString()] = true;
                 }
             }
@@ -138,12 +138,12 @@ namespace BusinessLogic.Services
 
         public async Task TrainFaceAsync(Guid userId)
         {
-            User user;
+            UserIdentity user;
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var myScopedService = scope.ServiceProvider.GetService<DataContext>();
 
-                user = await myScopedService.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                user = await myScopedService.UserIdentities.FirstOrDefaultAsync(u => u.Id == userId);
             }
             int faceId = user.FaceId;
 
@@ -184,7 +184,7 @@ namespace BusinessLogic.Services
             {
                 var myScopedService = scope.ServiceProvider.GetService<DataContext>();
 
-                users = await myScopedService.Users.ToListAsync();
+                users = await myScopedService.UserIdentities.ToListAsync();
             }
         }
 

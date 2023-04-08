@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SharedData.Models;
 using SharedData.Models.Auth;
+using SharedData.Models.User;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace PersonalDiary.Server.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegisterDTO userRegisterDTO)
+        public async Task<IActionResult> Register(UserIdentityRegisterDTO userRegisterDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -63,7 +64,7 @@ namespace PersonalDiary.Server.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
+        public async Task<IActionResult> Login(UserIdentityLoginDTO userLoginDTO)
         {
             var authResult = await _authService.LoginAsync(userLoginDTO);
 
@@ -83,7 +84,7 @@ namespace PersonalDiary.Server.Controllers
         }
 
         [HttpPost("loginFace")]
-        public async Task<IActionResult> LoginFace(UserLoginDTO userLoginDTO)
+        public async Task<IActionResult> LoginFace(UserIdentityLoginDTO userLoginDTO)
         {
             var authResult = await _authService.LoginFaceAsync(userLoginDTO);
 

@@ -7,7 +7,7 @@ namespace BusinessLogic.Services
 {
     public interface INoteService
     {
-        Task<List<Note>> GetAllNotesAsync();
+        Task<List<Note>> GetAllNotesByUserIdentityIdAsync(Guid userIdentityId);
 
         Task<Note> GetNoteByIdAsync(Guid noteId);
         Task<Note> GetNoteByIdAsNoTrackingAsync(Guid noteId);

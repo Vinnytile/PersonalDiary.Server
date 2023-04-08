@@ -2,19 +2,25 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-
-namespace SharedData.Models
+namespace SharedData.Models.User
 {
-    public class User
+    public class UserIdentity
     {
+        // Id
         public Guid Id { get; set; }
-        public string Username { get; set; }
+
+        // General
         [Required]
         public string Email { get; set; }
         public string Password { get; set; }
 
+        // FaceId
         public int FaceId { get; set; }
 
+        // UserProfile
+        public UserProfile? UserProfile { get; set; } = null!;
+
+        // Notes
         public List<Note> Notes { get; set; }
     }
 }

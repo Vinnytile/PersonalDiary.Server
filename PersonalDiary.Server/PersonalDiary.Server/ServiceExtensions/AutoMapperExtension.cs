@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using SharedData.Models;
+using SharedData.Models.User;
 
 namespace PersonalDiary.Server.ServiceExtensions
 {
@@ -10,8 +11,9 @@ namespace PersonalDiary.Server.ServiceExtensions
         {
             var mapperConfig = new MapperConfiguration(configurationExpression =>
             {
-                configurationExpression.CreateMap<UserRegisterDTO, User>();
+                configurationExpression.CreateMap<UserIdentityRegisterDTO, UserIdentity>();
                 configurationExpression.CreateMap<NoteDTO, Note>();
+                configurationExpression.CreateMap<UserProfileDTO, UserProfile>();
             });
 
             IMapper mapper = mapperConfig.CreateMapper();

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PersonalDiary.Server.Controllers
 {
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class NotesController : ControllerBase
@@ -21,16 +21,16 @@ namespace PersonalDiary.Server.Controllers
             _noteService = noteService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("{userIdentityId}")]
+        public async Task<IActionResult> GetNotes(Guid userIdentityId)
         {
-            List<Note> notes = await _noteService.GetAllNotesAsync();
+            List<Note> notes = await _noteService.GetAllNotesByUserIdentityIdAsync(userIdentityId);
             
             return Ok(notes);
         }
 
         // GET api/notes/5
-        [HttpGet("{id}")]
+        [HttpGet("note/{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
             var note = await _noteService.GetNoteByIdAsync(id);
