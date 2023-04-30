@@ -22,5 +22,9 @@ namespace SharedData.Models.User
 
         // Notes
         public List<Note> Notes { get; set; }
+
+        // Subscription
+        public List<Subscription> Subscribers { get; set; }
+        public List<Subscription> Observables { get; set; }
     }
 }
