@@ -9,6 +9,8 @@ namespace BusinessLogic.Services
     {
         Task<List<Note>> GetAllNotesByUserIdentityIdAsync(Guid userIdentityId);
 
+        Task<List<Note>> GetObservedNotesByUserIdentityIdAsync(Guid userIdentityId);
+
         Task<Note> GetNoteByIdAsync(Guid noteId);
         Task<Note> GetNoteByIdAsNoTrackingAsync(Guid noteId);
 

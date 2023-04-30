@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Services;
+using BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedData.Models;
 using SharedData.Models.Auth;
@@ -14,11 +15,13 @@ namespace PersonalDiary.Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IUserProfileService _userProfileService;
         private readonly NeuralNetworkService _neuralNetworkService;
 
-        public AuthController(IAuthService authService, NeuralNetworkService neuralNetworkService)
+        public AuthController(IAuthService authService, IUserProfileService userProfileService, NeuralNetworkService neuralNetworkService)
         {
             _authService = authService;
+            _userProfileService = userProfileService;
             _neuralNetworkService = neuralNetworkService;
         }
 
@@ -61,6 +64,25 @@ namespace PersonalDiary.Server.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpPost("registerProfile")]
+        public async Task<IActionResult> RegisterProfile(UserProfileDTO userProfileDTO)
+        {
+            if (userProfileDTO == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _userProfileService.CreateUserProfileAsync(userProfileDTO);
+                return Ok(userProfileDTO);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("login")]

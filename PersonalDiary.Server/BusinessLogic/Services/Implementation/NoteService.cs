@@ -24,6 +24,15 @@ namespace BusinessLogic.Services
         public async Task<List<Note>> GetAllNotesByUserIdentityIdAsync(Guid userIdentityId) =>
             await _dataContext.Notes.Where(x => x.UserIdentityFID == userIdentityId).ToListAsync();
 
+        public async Task<List<Note>> GetObservedNotesByUserIdentityIdAsync(Guid userIdentityId)
+        {
+            var observedUserIdentititesId = await _dataContext.Subscriptions.Where(s => s.SubscriberFID == userIdentityId).Select(s => s.ObservableFID).ToListAsync();
+
+            var observedNotes = await _dataContext.Notes.Where(n => observedUserIdentititesId.Contains(n.UserIdentityFID)).ToListAsync();
+
+            return observedNotes;
+        }
+
         public async Task<Note> GetNoteByIdAsync(Guid noteId) =>
             await _dataContext.Notes.FirstOrDefaultAsync(n => n.Id == noteId);
 

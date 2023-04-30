@@ -2,8 +2,12 @@
 using BusinessLogic.Services.Interfaces;
 using DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
+using SharedData.Models;
 using SharedData.Models.User;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services.Implementation
@@ -18,6 +22,9 @@ namespace BusinessLogic.Services.Implementation
             _dataContext = dataContext;
             _mapper = mapper;
         }
+
+        public async Task<List<UserProfile>> GetAllUserProfiles() =>
+            await _dataContext.UserProfiles.ToListAsync();
 
         public async Task<UserProfile> GetUserProfileByIdAsync(Guid userProfileId) =>
             await _dataContext.UserProfiles.FirstOrDefaultAsync(u => u.Id == userProfileId);
@@ -40,5 +47,32 @@ namespace BusinessLogic.Services.Implementation
             return updated > 0;
         }
 
+        public async Task<bool> SubscribeUserAsync(SubscriptionDTO subscriptionDTO)
+        {
+            Subscription subscription = _mapper.Map<Subscription>(subscriptionDTO);
+
+            var observableIdentitityFID = _dataContext.UserProfiles.FirstOrDefault(up => up.Id == subscriptionDTO.ObservableFID).UserIdentityFID;
+            subscription.ObservableFID = observableIdentitityFID;
+
+            await _dataContext.Subscriptions.AddAsync(subscription);
+            var subscribed = await _dataContext.SaveChangesAsync();
+
+            return subscribed > 0;
+        }
+
+        public async Task<bool> UnsubscribeUserAsync(SubscriptionDTO subscriptionDTO)
+        {
+            Subscription subscription = _mapper.Map<Subscription>(subscriptionDTO);
+
+            var observableIdentitityFID = _dataContext.UserProfiles.FirstOrDefault(up => up.Id == subscriptionDTO.ObservableFID).UserIdentityFID;
+            subscription.ObservableFID = observableIdentitityFID;
+
+            var deleteSubscription = _dataContext.Subscriptions.FirstOrDefault(s => s.SubscriberFID == subscription.SubscriberFID && s.ObservableFID == subscription.ObservableFID);
+
+            var subscriptionList = _dataContext.Subscriptions.Remove(deleteSubscription);
+            var unsubscribed = await _dataContext.SaveChangesAsync();
+
+            return unsubscribed > 0;
+        }
     }
 }

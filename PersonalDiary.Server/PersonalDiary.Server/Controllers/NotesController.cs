@@ -29,6 +29,14 @@ namespace PersonalDiary.Server.Controllers
             return Ok(notes);
         }
 
+        [HttpGet("observed/{userIdentityId}")]
+        public async Task<IActionResult> GetObservedNotes(Guid userIdentityId)
+        {
+            List<Note> notes = await _noteService.GetObservedNotesByUserIdentityIdAsync(userIdentityId);
+
+            return Ok(notes);
+        }
+
         // GET api/notes/5
         [HttpGet("note/{id}")]
         public async Task<IActionResult> Get(Guid id)

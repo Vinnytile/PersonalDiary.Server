@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SharedData.Models;
 using SharedData.Models.User;
+using System;
 
 namespace DataAccess.Context
 {
@@ -11,6 +12,8 @@ namespace DataAccess.Context
         public DbSet<Note> Notes { get; set; }
         public DbSet<UserIdentity> UserIdentities { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
+
+        public DbSet<Subscription> Subscriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +32,26 @@ namespace DataAccess.Context
                 .WithOne(e => e.UserIdentity)
                 .HasForeignKey<UserProfile>(e => e.UserIdentityFID)
                 .IsRequired();
+
+            modelBuilder.Entity<UserIdentity>()
+                .HasMany(e => e.Subscribers)
+                .WithOne(e => e.Subscriber)
+                .HasForeignKey(e => e.SubscriberFID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserIdentity>()
+                .HasMany(e => e.Observables)
+                .WithOne(e => e.Observable)
+                .HasForeignKey(e => e.ObservableFID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Subscription>()
+                .HasIndex(s => new
+                { 
+                    s.SubscriberFID,
+                    s.ObservableFID
+                })
+                .IsUnique();
         }
     }
 }
