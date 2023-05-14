@@ -15,6 +15,10 @@ namespace SharedData.Models.User
         public int Age { get; set; }
         public DateTime DateOfBirth { get; set; }
 
+        // Time settings
+        public DateTime CreatedAt { get; set; }
+        public DateTime ChangedAt { get; set; }
+
         // UserIdentity
         public Guid UserIdentityFID { get; set; }
         public UserIdentity UserIdentity { get; set; }

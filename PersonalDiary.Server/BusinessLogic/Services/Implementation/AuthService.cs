@@ -37,6 +37,7 @@ namespace BusinessLogic.Services
 
             UserIdentity newUserIdentity = _mapper.Map<UserIdentity>(useridentityRegisterDTO);
             newUserIdentity.Password = BCryptNet.HashPassword(newUserIdentity.Password);
+            newUserIdentity.CreatedAt = DateTime.Now;
 
             var createdUser = await _dataContext.UserIdentities.AddAsync(newUserIdentity);
             await _dataContext.SaveChangesAsync();
@@ -59,6 +60,7 @@ namespace BusinessLogic.Services
 
             var user = await _dataContext.UserIdentities.FirstOrDefaultAsync(u => u.Id == userId);
             user.FaceId = maxFaceId + 1;
+            user.ChangedAt = DateTime.Now;
 
             _dataContext.UserIdentities.Update(user);
             var updated = await _dataContext.SaveChangesAsync();

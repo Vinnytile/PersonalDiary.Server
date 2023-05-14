@@ -2,12 +2,10 @@
 using BusinessLogic.Services.Interfaces;
 using DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
-using SharedData.Models;
 using SharedData.Models.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services.Implementation
@@ -32,6 +30,7 @@ namespace BusinessLogic.Services.Implementation
         public async Task<bool> CreateUserProfileAsync(UserProfileDTO UserProfileDTO)
         {
             UserProfile userProfile = _mapper.Map<UserProfile>(UserProfileDTO);
+            userProfile.CreatedAt = DateTime.Now;
 
             await _dataContext.UserProfiles.AddAsync(userProfile);
             var created = await _dataContext.SaveChangesAsync();
@@ -41,6 +40,7 @@ namespace BusinessLogic.Services.Implementation
 
         public async Task<bool> UpdateUserProfileAsync(UserProfile userProfile)
         {
+            userProfile.ChangedAt = DateTime.Now;
             _dataContext.UserProfiles.Update(userProfile);
             var updated = await _dataContext.SaveChangesAsync();
 
@@ -53,6 +53,7 @@ namespace BusinessLogic.Services.Implementation
 
             var observableIdentitityFID = _dataContext.UserProfiles.FirstOrDefault(up => up.Id == subscriptionDTO.ObservableFID).UserIdentityFID;
             subscription.ObservableFID = observableIdentitityFID;
+            subscription.CreatedAt = DateTime.Now;
 
             await _dataContext.Subscriptions.AddAsync(subscription);
             var subscribed = await _dataContext.SaveChangesAsync();

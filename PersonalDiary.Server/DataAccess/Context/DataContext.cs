@@ -10,6 +10,7 @@ namespace DataAccess.Context
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<Note> Notes { get; set; }
+
         public DbSet<UserIdentity> UserIdentities { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
 
