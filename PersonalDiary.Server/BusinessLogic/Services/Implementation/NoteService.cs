@@ -5,7 +5,6 @@ using SharedData.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
@@ -42,6 +41,7 @@ namespace BusinessLogic.Services
         public async Task<bool> CreateNoteAsync(NoteDTO noteDTO)
         {
             Note note = _mapper.Map<Note>(noteDTO);
+            note.CreatedAt = DateTime.Now;
 
             await _dataContext.Notes.AddAsync(note);
             var created = await _dataContext.SaveChangesAsync();
@@ -51,6 +51,7 @@ namespace BusinessLogic.Services
 
         public async Task<bool> UpdateNoteAsync(Note note)
         {
+            note.ChangedAt = DateTime.Now;
             _dataContext.Notes.Update(note);
             var updated = await _dataContext.SaveChangesAsync();
 

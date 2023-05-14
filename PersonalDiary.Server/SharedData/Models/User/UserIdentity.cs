@@ -17,6 +17,10 @@ namespace SharedData.Models.User
         // FaceId
         public int FaceId { get; set; }
 
+        // Time settings
+        public DateTime CreatedAt { get; set; }
+        public DateTime ChangedAt { get; set; }
+
         // UserProfile
         public UserProfile? UserProfile { get; set; } = null!;
 
