@@ -15,6 +15,7 @@ namespace SharedData.Models
         // General
         public string Description { get; set; }
         public string Text { get; set; }
+        public string Summary { get; set; }
 
         // UserProfile
         public Guid UserIdentityFID { get; set; }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SharedData.Models;
 using SharedData.Models.User;
-using System;
 
 namespace DataAccess.Context
 {
