@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharedData.Models
 {
@@ -10,6 +6,7 @@ namespace SharedData.Models
     {
         public string Description { get; set; }
         public string Text { get; set; }
+        public string Summary { get; set; }
 
         public Guid UserIdentityFID { get; set; }
     }
