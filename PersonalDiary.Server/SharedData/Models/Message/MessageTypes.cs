@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace SharedData.Models
+﻿namespace SharedData.Models
 {
     public enum MessageTypes
     {
